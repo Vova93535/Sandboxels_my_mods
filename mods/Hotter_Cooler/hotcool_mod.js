@@ -1,7 +1,7 @@
-/// Mega Hotter & Mega Cooler - powerful heating/cooling devices
-/// Version 1.1 – added 999K Hotter and 999K Cooler
+/// Mega Hotter & Mega Cooler - мощные нагреватель и охладитель для Sandboxels
+/// Версия 1.2 — исправлено для официального API
 
-// MEGA HOTTER – heats all nearby pixels by +50°C per tick in a 10‑pixel radius
+// MEGA HOTTER – нагревает всё вокруг на 50°C за тик в радиусе 10 клеток
 elements.mega_hotter = {
     color: "#ff2200",
     tick: function(pixel) {
@@ -9,8 +9,13 @@ elements.mega_hotter = {
             for (let j = -10; j <= 10; j++) {
                 const checkX = pixel.x + j;
                 const checkY = pixel.y + i;
-                if (!isEmpty(checkX, checkY) && !outOfBounds(checkX, checkY)) {
-                    pixelMap[checkX][checkY].temp += 50;
+                // Проверяем, что координаты в пределах холста
+                if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height) {
+                    const target = pixelMap[checkX][checkY];
+                    // Проверяем, что клетка не пустая
+                    if (target && target.element) {
+                        target.temp += 50;
+                    }
                 }
             }
         }
@@ -18,10 +23,10 @@ elements.mega_hotter = {
     category: "machines",
     insulate: true,
     state: "solid",
-    desc: "MEGA HOTTER – heats everything within 10 pixels by +50°C per tick"
+    desc: "MEGA HOTTER – нагревает всё вокруг на 50°C за тик в радиусе 10 пикселей"
 };
 
-// MEGA COOLER – cools all nearby pixels by -50°C per tick (min -273°C)
+// MEGA COOLER – охлаждает всё вокруг на 50°C за тик (не ниже -273°C)
 elements.mega_cooler = {
     color: "#0022ff",
     tick: function(pixel) {
@@ -29,11 +34,12 @@ elements.mega_cooler = {
             for (let j = -10; j <= 10; j++) {
                 const checkX = pixel.x + j;
                 const checkY = pixel.y + i;
-                if (!isEmpty(checkX, checkY) && !outOfBounds(checkX, checkY)) {
-                    if (pixelMap[checkX][checkY].temp > -273) {
-                        pixelMap[checkX][checkY].temp -= 50;
-                        if (pixelMap[checkX][checkY].temp < -273) {
-                            pixelMap[checkX][checkY].temp = -273;
+                if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height) {
+                    const target = pixelMap[checkX][checkY];
+                    if (target && target.element) {
+                        if (target.temp > -273) {
+                            target.temp -= 50;
+                            if (target.temp < -273) target.temp = -273;
                         }
                     }
                 }
@@ -43,10 +49,10 @@ elements.mega_cooler = {
     category: "machines",
     insulate: true,
     state: "solid",
-    desc: "MEGA COOLER – cools everything within 10 pixels by -50°C per tick (min -273°C)"
+    desc: "MEGA COOLER – охлаждает всё вокруг на 50°C за тик в радиусе 10 пикселей (мин -273°C)"
 };
 
-// 999K HOTTER – instantly sets nearby pixels to 999,999°C in a 3‑pixel radius
+// 999K HOTTER – мгновенно устанавливает температуру 999,999°C в радиусе 3 клеток
 elements["999k_hotter"] = {
     color: "#ff6600",
     tick: function(pixel) {
@@ -54,8 +60,11 @@ elements["999k_hotter"] = {
             for (let j = -3; j <= 3; j++) {
                 const checkX = pixel.x + j;
                 const checkY = pixel.y + i;
-                if (!isEmpty(checkX, checkY) && !outOfBounds(checkX, checkY)) {
-                    pixelMap[checkX][checkY].temp = 999999;
+                if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height) {
+                    const target = pixelMap[checkX][checkY];
+                    if (target && target.element) {
+                        target.temp = 999999;
+                    }
                 }
             }
         }
@@ -63,10 +72,10 @@ elements["999k_hotter"] = {
     category: "machines",
     insulate: true,
     state: "solid",
-    desc: "999K HOTTER – sets temperature of all pixels within 3 pixels to 999,999°C"
+    desc: "999K HOTTER – устанавливает температуру всех пикселей в радиусе 3 клеток на 999,999°C"
 };
 
-// 999K COOLER – instantly sets nearby pixels to -999,999°C in a 3‑pixel radius
+// 999K COOLER – мгновенно устанавливает температуру -999,999°C в радиусе 3 клеток
 elements["999k_cooler"] = {
     color: "#0066ff",
     tick: function(pixel) {
@@ -74,8 +83,11 @@ elements["999k_cooler"] = {
             for (let j = -3; j <= 3; j++) {
                 const checkX = pixel.x + j;
                 const checkY = pixel.y + i;
-                if (!isEmpty(checkX, checkY) && !outOfBounds(checkX, checkY)) {
-                    pixelMap[checkX][checkY].temp = -999999;
+                if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height) {
+                    const target = pixelMap[checkX][checkY];
+                    if (target && target.element) {
+                        target.temp = -999999;
+                    }
                 }
             }
         }
@@ -83,5 +95,5 @@ elements["999k_cooler"] = {
     category: "machines",
     insulate: true,
     state: "solid",
-    desc: "999K COOLER – sets temperature of all pixels within 3 pixels to -999,999°C"
+    desc: "999K COOLER – устанавливает температуру всех пикселей в радиусе 3 клеток на -999,999°C"
 };
